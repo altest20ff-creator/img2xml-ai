@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Img2XML AI - Offline Android XML Reconstructor</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Img2XML AI (Offline)</h1>
+    <p>إعادة بناء واجهة Android XML من صورة واحدة - محليًا بالكامل</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <h2>1) الإدخال والإعدادات</h2>
+      <label class="file-picker">رفع صورة
+        <input id="imageInput" type="file" accept="image/*" />
+      </label>
+
+      <div class="grid two">
+        <label>مرجع العرض (dp)<input id="designWidth" type="number" value="360" min="240" max="1440" /></label>
+        <label>مرجع الارتفاع (dp)<input id="designHeight" type="number" value="800" min="320" max="2960" /></label>
+        <label>عامل الكثافة (px لكل dp)<input id="dpScale" type="number" value="3" step="0.1" min="0.5" max="6" /></label>
+        <label>حساسية الحدود<input id="edgeSensitivity" type="range" min="5" max="80" value="22" /></label>
+        <label>أدنى حجم عنصر (px²)<input id="minArea" type="number" value="320" min="16" /></label>
+        <label>نوع الجذر
+          <select id="rootType">
+            <option value="auto">Auto</option>
+            <option value="ConstraintLayout">ConstraintLayout</option>
+            <option value="LinearLayout">LinearLayout</option>
+            <option value="FrameLayout">FrameLayout</option>
+          </select>
+        </label>
+        <label>نظام الألوان
+          <select id="colorSystem">
+            <option value="auto">Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+        <label><input id="textDetect" type="checkbox" checked /> اكتشاف نص تقديري</label>
+        <label><input id="iconDetect" type="checkbox" checked /> اكتشاف أيقونات</label>
+        <label><input id="manualMode" type="checkbox" /> وضع تصحيح يدوي</label>
+      </div>
+
+      <div class="btn-row">
+        <button id="analyzeBtn">تحليل الصورة</button>
+        <button id="resetBtn" class="ghost">إعادة الضبط</button>
+      </div>
+
+      <div id="progress" class="progress">جاهز.</div>
+      <div id="warnings" class="warnings"></div>
+    </section>
+
+    <section class="panel preview">
+      <h2>2) المعاينة</h2>
+      <div class="btn-row small">
+        <button id="toggleModeBtn">عرض: الأصل</button>
+        <button id="regenBtn" class="ghost">إعادة توليد XML</button>
+      </div>
+      <div id="phoneFrame" class="phone-frame">
+        <canvas id="sourceCanvas"></canvas>
+        <div id="overlay"></div>
+        <div id="inferredPreview"></div>
+      </div>
+    </section>
+
+    <section class="panel editor">
+      <h2>3) محرر النموذج</h2>
+      <div class="editor-wrap">
+        <div>
+          <h3>شجرة العناصر</h3>
+          <ul id="treeView" class="tree"></ul>
+        </div>
+        <div>
+          <h3>خصائص العنصر المحدد</h3>
+          <div id="selectedMeta" class="meta">لا يوجد عنصر محدد</div>
+          <div class="grid two compact">
+            <label>النوع
+              <select id="propType">
+                <option>container</option><option>card</option><option>image</option>
+                <option>icon</option><option>button</option><option>input</option>
+                <option>text</option><option>nav</option><option>list</option><option>unknown</option>
+              </select>
+            </label>
+            <label>ID<input id="propId" type="text" /></label>
+            <label>النص<input id="propText" type="text" /></label>
+            <label>اللون<input id="propColor" type="text" placeholder="#RRGGBB" /></label>
+            <label>الثقة<input id="propConfidence" type="number" step="0.01" min="0" max="1" /></label>
+            <label>Radius(px)<input id="propRadius" type="number" min="0" /></label>
+          </div>
+          <div class="btn-row small">
+            <button id="savePropBtn">حفظ</button>
+            <button id="deleteBtn" class="danger">حذف</button>
+            <button id="addChildBtn" class="ghost">إضافة Child</button>
+            <button id="mergeBtn" class="ghost">دمج مع المحدد الثاني</button>
+            <button id="moveUpBtn" class="ghost">رفع الطبقة</button>
+            <button id="moveDownBtn" class="ghost">خفض الطبقة</button>
+            <button id="toRootBtn" class="ghost">نقل إلى الجذر</button>
+          </div>
+          <small>لدمج عنصرين: فعّل الوضع اليدوي، اختر عنصر أول ثم Ctrl+Click على عنصر ثانٍ.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel outputs">
+      <h2>4) المخرجات</h2>
+      <div class="tabs">
+        <button data-tab="xml" class="active">layout.xml</button>
+        <button data-tab="json">model.json</button>
+        <button data-tab="res">resources</button>
+      </div>
+      <textarea id="xmlOutput" class="out active" spellcheck="false"></textarea>
+      <textarea id="jsonOutput" class="out" spellcheck="false"></textarea>
+      <textarea id="resOutput" class="out" spellcheck="false"></textarea>
+      <div class="btn-row">
+        <button id="copyXmlBtn">نسخ XML</button>
+        <button id="copyJsonBtn">نسخ JSON</button>
+        <button id="downloadXmlBtn">تنزيل XML</button>
+        <button id="downloadJsonBtn">تنزيل JSON</button>
+        <button id="downloadZipBtn">تنزيل ZIP</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
