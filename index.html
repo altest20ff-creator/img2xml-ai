@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>محول الصورة إلى Android XML</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>محول الصورة إلى Android XML</h1>
+        <p>تحليل محلي بالكامل داخل المتصفح باستخدام JavaScript وCanvas فقط.</p>
+      </header>
+
+      <section class="panel settings-panel">
+        <h2>الإعدادات</h2>
+        <div class="settings-grid">
+          <label>
+            نوع الجذر
+            <select id="rootType">
+              <option value="ConstraintLayout">ConstraintLayout</option>
+              <option value="LinearLayout">LinearLayout</option>
+            </select>
+          </label>
+
+          <label>
+            اتجاه الواجهة
+            <select id="layoutDirection">
+              <option value="rtl">RTL</option>
+              <option value="ltr">LTR</option>
+            </select>
+          </label>
+
+          <label>
+            اسم الحزمة (اختياري)
+            <input id="packageName" type="text" placeholder="com.example.app" />
+          </label>
+
+          <label>
+            اسم النشاط (اختياري)
+            <input id="activityName" type="text" placeholder="MainActivity" />
+          </label>
+
+          <label class="toggle">
+            <input id="detectColors" type="checkbox" checked />
+            <span>تفعيل التعرف على الألوان</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel upload-panel">
+        <h2>رفع الصورة</h2>
+        <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="منطقة السحب والإفلات">
+          <p>اسحب الصورة وأفلتها هنا أو اختر ملفًا</p>
+          <input id="fileInput" type="file" accept="image/*" />
+          <button id="pickFileBtn" class="btn" type="button">اختيار صورة</button>
+        </div>
+
+        <div class="preview-wrap">
+          <div class="preview-box">
+            <h3>معاينة الصورة</h3>
+            <img id="imagePreview" alt="معاينة الصورة المرفوعة" />
+            <p id="emptyPreview" class="muted">لا توجد صورة بعد</p>
+          </div>
+
+          <div class="preview-box">
+            <h3>معاينة الواجهة الناتجة</h3>
+            <div id="uiPreview" class="ui-preview">
+              <p class="muted">سيتم عرض المعاينة بعد التحليل</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="analyzeBtn" class="btn primary" type="button">تحليل الصورة وتوليد XML</button>
+          <button id="reanalyzeBtn" class="btn" type="button">إعادة التحليل</button>
+        </div>
+      </section>
+
+      <section class="panel output-panel">
+        <div class="status-row">
+          <h2>الناتج</h2>
+          <span id="statusBadge" class="status">جاهز</span>
+        </div>
+        <p id="statusMessage" class="status-message">ابدأ برفع صورة ثم اضغط تحليل.</p>
+
+        <label for="xmlEditor">Android XML (قابل للتحرير)</label>
+        <textarea id="xmlEditor" spellcheck="false" placeholder="سيظهر XML هنا..."></textarea>
+
+        <div class="actions">
+          <button id="copyBtn" class="btn" type="button">نسخ XML</button>
+          <button id="downloadBtn" class="btn" type="button">تنزيل XML</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
